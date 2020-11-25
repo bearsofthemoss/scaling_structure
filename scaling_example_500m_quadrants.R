@@ -23,14 +23,12 @@ northing<-osbs_tow[2]
 byTileAOP("DP1.30003.001", site="OSBS", year="2019", check.size = T,buffer = 500,
           easting=easting, northing=northing, savepath="neon_data")
 
-# enter 'y' to 
 
 # read in LAz files
 ### make a list of the files
 osbsL<-list.files(path="neon_data\\DP1.30003.001\\2019\\FullSite\\D03\\2019_OSBS_5\\L1\\DiscreteLidar\\ClassifiedPointCloud", recursive = T, full.names = T)
 # use 'readLAS' to read in the files
 laz<-readLAS(osbsL)
-plot(laz)  # this will pop open a new window ('RGL device'). I was confused not to see a plot in Rstudio
 
 ## get the center of the lidar files
 ext<-extent(laz)
@@ -42,8 +40,8 @@ center
 
 a<-250
 
-lon<-seq((center[1]-250), (center[1]+250) , a)
-lat<-seq((center[2]-250) , (center[2]+250), a)
+lon<-seq((center[1]-500), (center[1]+500) , a)
+lat<-seq((center[2]-500) , (center[2]+500), a)
 coord<-as.data.frame(expand.grid(lon, lat))
 coord$area<-paste(a,"m")
 
@@ -83,7 +81,7 @@ data.30m <- lasclipRectangle(data.200m, xleft = (x - a/2), ybottom = (y - a/2), 
   # again, this is called 30m but its actually whatever 'a' is set to
 data.30m@data$Z[data.30m@data$Z <= .5] <- NA  
 
-a
+
 # Now run the metric calculations on the object 'laz_data'
 laz_data<-data.30m
 #  plot(laz_data)
@@ -137,8 +135,6 @@ plot.metrics
 plot.metrics<-as.data.frame(rbindlist(plot.metrics))
 plot.metrics$plot_area<-coord$area
 pm<-plot.metrics
-
-# here are the 4 quadrants with 13 metrics calculated
 head(pm)
 
 
