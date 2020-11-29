@@ -20,8 +20,8 @@ northing<-osbs_tow[2]
 
 
 # download tile of aerial lidar that contains the tower
-byTileAOP("DP1.30003.001", site="OSBS", year="2019", check.size = T,buffer = 500,
-          easting=easting, northing=northing, savepath="neon_data")
+#byTileAOP("DP1.30003.001", site="OSBS", year="2019", check.size = T,buffer = 500,
+#          easting=easting, northing=northing, savepath="neon_data")
 
 
 # read in LAz files
@@ -32,20 +32,20 @@ laz<-readLAS(osbsL)
 
 ## get the center of the lidar files
 ext<-extent(laz)
-ext
 center<-c( (ext[1]+ext[2])/2 , (ext[3]+ext[4])/2 )
-center
 
 ## specify plot area plot areas for the kilometer of LiDAR data. 
 
-a<-250
+a<-40
 
 lon<-seq((center[1]-500), (center[1]+500) , a)
+lon
 lat<-seq((center[2]-500) , (center[2]+500), a)
+lat
 coord<-as.data.frame(expand.grid(lon, lat))
 coord$area<-paste(a,"m")
 
-plot(coord$Var1, coord$Var2, main="300 m grid")
+plot(coord$Var1, coord$Var2, main="500 m grid")
 
 
 ######################################################################
@@ -143,9 +143,9 @@ g<-gather(pm, "metric","value",3:15)
 g
 
 
-write.csv(g, file="data/scaling_plot_area/250m_plot_area.csv")
+write.csv(g, file="output_data/40m_plot_area.csv")
 
-
-ggplot(g, aes(x=plots, y=value))+ geom_point(size=5)+
+head(g)
+ggplot(g, aes(x=plot_area, y=value))+ geom_boxplot()+
 theme_classic()+facet_wrap(~metric, scales="free_y", nrow=2)+   theme(text=element_text(size=18))
 
