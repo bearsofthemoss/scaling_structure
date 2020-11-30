@@ -134,6 +134,7 @@ plot.metrics
 # post-loop processing
 plot.metrics<-as.data.frame(rbindlist(plot.metrics))
 plot.metrics$plot_area<-coord$area
+plot.metrics$plot_area<-"40m"
 pm<-plot.metrics
 head(pm)
 
