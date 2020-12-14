@@ -19,16 +19,29 @@ easting<-osbs_tow[1]
 northing<-osbs_tow[2]
 
 
+unde_tow<-c(5123162.89, 304366.95)
+easting<-unde_tow[1]
+northing<-unde_tow[2]
+
+wref_tow<-c(5074636.87, 581417.80)
+easting<-wref_tow[1]
+northing<-wref_tow[2]
+
+
 # download tile of aerial lidar that contains the tower
-#byTileAOP("DP1.30003.001", site="OSBS", year="2019", check.size = T,buffer = 500,
+#byTileAOP("DP1.30003.001", site="WREF", year="2019", check.size = T,buffer = 500,
 #          easting=easting, northing=northing, savepath="neon_data")
 
 
 # read in LAz files
 ### make a list of the files
 osbsL<-list.files(path="neon_data\\DP1.30003.001\\2019\\FullSite\\D03\\2019_OSBS_5\\L1\\DiscreteLidar\\ClassifiedPointCloud", recursive = T, full.names = T)
+undeL<-list.files(path="neon_data\\DP1.30003.001\\2019\\FullSite\\D05\\2019_UNDE_3\\L1\\DiscreteLidar\\ClassifiedPointCloud", recursive = T, full.names = T)
+wrefL<-list.files(path="neon_data\\DP1.30003.001\\2019\\FullSite\\D16\\2019_WREF_3\\L1\\DiscreteLidar\\ClassifiedPointCloud", recursive = T, full.names = T)
+
+
 # use 'readLAS' to read in the files
-laz<-readLAS(osbsL)
+laz<-readLAS(wrefL)
 
 ## get the center of the lidar files
 ext<-extent(laz)
@@ -36,18 +49,21 @@ center<-c( (ext[1]+ext[2])/2 , (ext[3]+ext[4])/2 )
 
 ## specify plot area plot areas for the kilometer of LiDAR data. 
 
-a<-40
+a<-10
 
-lon<-seq((center[1]-500), (center[1]+500) , a)
-lon
-lat<-seq((center[2]-500) , (center[2]+500), a)
-lat
+lon<-seq(as.numeric((center[1]-(500-(a/5)))), as.numeric((center[1]+(500-(a/2)))) , sqrt((a^2)+(a^2)))
+lat<-seq(as.numeric((center[2]-(500-(a/5)))), as.numeric((center[2]+(500-(a/2)))),  sqrt((a^2)+(a^2)))
+
+
 coord<-as.data.frame(expand.grid(lon, lat))
 coord$area<-paste(a,"m")
 
 plot(coord$Var1, coord$Var2, main="500 m grid")
 
+ext
 
+max(coord$Var1)-min(coord$Var1)
+max(coord$Var2)-min(coord$Var2)
 ######################################################################
 # the Loop
     #  Credit to Liz LaRue and the NEON tutorial this came from!
@@ -134,7 +150,7 @@ plot.metrics
 # post-loop processing
 plot.metrics<-as.data.frame(rbindlist(plot.metrics))
 plot.metrics$plot_area<-coord$area
-plot.metrics$plot_area<-"40m"
+
 pm<-plot.metrics
 head(pm)
 
@@ -144,7 +160,7 @@ g<-gather(pm, "metric","value",3:15)
 g
 
 
-write.csv(g, file="output_data/40m_plot_area.csv")
+write.csv(g, file="output_data/WREF/250m_plot_area.csv")
 
 head(g)
 ggplot(g, aes(x=plot_area, y=value))+ geom_boxplot()+
