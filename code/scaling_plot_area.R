@@ -45,14 +45,19 @@ laz<-readLAS(wrefL)
 
 ## get the center of the lidar files
 ext<-extent(laz)
+ext
 center<-c( (ext[1]+ext[2])/2 , (ext[3]+ext[4])/2 )
-
+center
 ## specify plot area plot areas for the kilometer of LiDAR data. 
 
-a<-10
+a<-500
 
-lon<-seq(as.numeric((center[1]-(500-(a/5)))), as.numeric((center[1]+(500-(a/2)))) , sqrt((a^2)+(a^2)))
-lat<-seq(as.numeric((center[2]-(500-(a/5)))), as.numeric((center[2]+(500-(a/2)))),  sqrt((a^2)+(a^2)))
+lon<-seq(as.numeric((center[1]-(500-(a/5)))), as.numeric((center[1]+(500-(a/5)))) , 2*sqrt((a^2)+(a^2)))
+lat<-seq(as.numeric((center[2]-(500-(a/5)))), as.numeric((center[2]+(500-(a/5)))),  2*sqrt((a^2)+(a^2)))
+center
+
+lon<-seq(as.numeric((center[1]-400)), as.numeric((center[1]+400)) , sqrt((a^2)+(a^2)))
+lat<-seq(as.numeric((center[2]-400)), as.numeric((center[2]+400)),  sqrt((a^2)+(a^2)))
 
 
 coord<-as.data.frame(expand.grid(lon, lat))
@@ -60,16 +65,21 @@ coord$area<-paste(a,"m")
 
 plot(coord$Var1, coord$Var2, main="500 m grid")
 
+length(coord$Var1)
 ext
 
-max(coord$Var1)-min(coord$Var1)
+max(coord$Var1)
+min(coord$Var1)
+max(coord$Var2)
+min(coord$Var2)
+
 max(coord$Var2)-min(coord$Var2)
+
 ######################################################################
 # the Loop
     #  Credit to Liz LaRue and the NEON tutorial this came from!
 ######################################################################
 plot.metrics<-list()
-
 
 for(i in c(1:length(coord$Var1))){    # the loop only goes for the first 4 rows because the first 4 use the C1laz. rows 5-8 need C2laz. 9-12 need C3laz.
   center<-coord[i, ]
@@ -160,9 +170,9 @@ g<-gather(pm, "metric","value",3:15)
 g
 
 
-write.csv(g, file="output_data/WREF/250m_plot_area.csv")
+write.csv(g, file="output_data/WREF/500m_plot_area.csv")
 
-head(g)
+  head(g)
 ggplot(g, aes(x=plot_area, y=value))+ geom_boxplot()+
 theme_classic()+facet_wrap(~metric, scales="free_y", nrow=2)+   theme(text=element_text(size=18))
 
