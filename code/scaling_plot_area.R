@@ -41,7 +41,7 @@ wrefL<-list.files(path="neon_data\\DP1.30003.001\\2019\\FullSite\\D16\\2019_WREF
 
 
 # use 'readLAS' to read in the files
-laz<-readLAS(wrefL)
+laz<-readLAS(osbsL)
 
 ## get the center of the lidar files
 ext<-extent(laz)
@@ -50,12 +50,14 @@ center<-c( (ext[1]+ext[2])/2 , (ext[3]+ext[4])/2 )
 center
 ## specify plot area plot areas for the kilometer of LiDAR data. 
 
-a<-500
+a<-10
 
 lon<-seq(as.numeric((center[1]-(500-(a/5)))), as.numeric((center[1]+(500-(a/5)))) , 2*sqrt((a^2)+(a^2)))
 lat<-seq(as.numeric((center[2]-(500-(a/5)))), as.numeric((center[2]+(500-(a/5)))),  2*sqrt((a^2)+(a^2)))
+
 center
 
+# for 500
 lon<-seq(as.numeric((center[1]-400)), as.numeric((center[1]+400)) , sqrt((a^2)+(a^2)))
 lat<-seq(as.numeric((center[2]-400)), as.numeric((center[2]+400)),  sqrt((a^2)+(a^2)))
 
@@ -68,11 +70,7 @@ plot(coord$Var1, coord$Var2, main="500 m grid")
 length(coord$Var1)
 ext
 
-max(coord$Var1)
-min(coord$Var1)
-max(coord$Var2)
-min(coord$Var2)
-
+max(coord$Var1)-min(coord$Var1)
 max(coord$Var2)-min(coord$Var2)
 
 ######################################################################
@@ -163,14 +161,14 @@ plot.metrics$plot_area<-coord$area
 
 pm<-plot.metrics
 head(pm)
-
+dim(pm)
 
 # graph to see the 13 metrics
 g<-gather(pm, "metric","value",3:15)
 g
 
 
-write.csv(g, file="output_data/WREF/500m_plot_area.csv")
+write.csv(g, file="output_data/OSBS/10m_plot_area.csv")
 
   head(g)
 ggplot(g, aes(x=plot_area, y=value))+ geom_boxplot()+
