@@ -10,6 +10,9 @@ m500<-read.csv("output_data/OSBS/500m_plot_area.csv")
 #
 OSBS<-rbind(m40, m100, m250, m500)
 OSBS$site<-"OSBS"
+
+
+
 ###############################
 m10<-read.csv("output_data/UNDE/10m_plot_area.csv")
 m40<-read.csv("output_data/UNDE/40m_plot_area.csv")
@@ -37,19 +40,29 @@ table(fsd$site, fsd$plot_area)
 fsd$plot_area<-factor(fsd$plot_area, levels=c("10 m","40 m","100 m", "250 m","500 m"))
 table(fsd$metric)
 
-head(fsd)
+
+fsd[fsd$metric=="rumple.aop",]
+
 library(tidyr)
 spr<-spread(fsd, "metric","value")
+head(spr)
+
+
 names(spr)
 
-sp<-spr[ ,c(2,3,4,5,6,7,10,11,12,14)]
+sp<-spr[ ,c(2,3,4,5,12,10,15,17,9,13)]   
+            
+            
 
-head(sp)
+head(sp,50)
 
 use<-gather(sp, "metric","value",5:10)
 
+
+table(use$metric)
 library(ggplot2)
-dev.off()
+
+
 
 
 write.csv(use, file="output_data/combined_scaling_data.csv")
