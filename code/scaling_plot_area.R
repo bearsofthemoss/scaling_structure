@@ -29,11 +29,7 @@ northing<-wref_tow[2]
 
 
 # download tile of aerial lidar that contains the tower
-byTileAOP("DP1.30003.001", site="OSBS", year="2019", check.size = T,buffer = 500,
-          easting=easting, northing=northing, savepath="neon_data")
-
-
-#byTileAOP("DP3.30015.001", site="WREF", year="2019", check.size = T,buffer = 500,
+byTileAOP("DP1.30003.001", site="OSBS", year="2019", check.size = T,buffer = 900,
           easting=easting, northing=northing, savepath="neon_data")
 
 
@@ -51,40 +47,40 @@ laz<-readLAS(osbsL)
 ext<-extent(laz)
 ext
 center<-c( (ext[1]+ext[2])/2 , (ext[3]+ext[4])/2 )
+
+
+## for troubleshooting the grid
 #center<-c(0,0)
+
+
 ## specify plot area plot areas for the kilometer of LiDAR data. 
-
-a<-250
-
-lon<-seq(as.numeric((center[1]-(500-(a/5)))), as.numeric((center[1]+(500-(a/5)))) , 2*sqrt((a^2)+(a^2)))
-lat<-seq(as.numeric((center[2]-(500-(a/5)))), as.numeric((center[2]+(500-(a/5)))),  2*sqrt((a^2)+(a^2)))
-
+# for 500
+a<-500
+lon<-seq(as.numeric((center[1]-400)), as.numeric((center[1]+400)) , sqrt((a^2)+(a^2)))
+lat<-seq(as.numeric((center[2]-400)), as.numeric((center[2]+400)),  sqrt((a^2)+(a^2)))
 coord<-as.data.frame(expand.grid(lon, lat))
 coord$area<-paste(a,"m")
 
-coord10<-coord
-coord40<-coord
-coord100<-coord
-coord250<-coord
-coord500<-coord
+plot(coord$Var1, coord$Var2)
 
-# for 500
-lon<-seq(as.numeric((center[1]-400)), as.numeric((center[1]+400)) , sqrt((a^2)+(a^2)))
-lat<-seq(as.numeric((center[2]-400)), as.numeric((center[2]+400)),  sqrt((a^2)+(a^2)))
-
-
-
-
-par(mfrow=c(3,2))
-plot(coord10$Var1, coord10$Var2, main="10 m plot area")
-plot(coord40$Var1, coord40$Var2, main="40 m plot area")
-plot(coord100$Var1, coord100$Var2, main="100 m plot area")
-plot(coord250$Var1, coord250$Var2, main="250 m plot area")
-plot(coord500$Var1, coord500$Var2, main="500 m plot area")
+#########################
+#lon<-seq(as.numeric((center[1]-(500-(a/5)))), as.numeric((center[1]+(500-(a/5)))) , 2*sqrt((a^2)+(a^2)))
+#lat<-seq(as.numeric((center[2]-(500-(a/5)))), as.numeric((center[2]+(500-(a/5)))),  2*sqrt((a^2)+(a^2)))
+# coord10<-coord
+# coord40<-coord
+# coord100<-coord
+# coord250<-coord
+# coord500<-coord 
+# 
+# par(mfrow=c(3,2))
+# plot(coord10$Var1, coord10$Var2, main="10 m plot area")
+# plot(coord40$Var1, coord40$Var2, main="40 m plot area")
+# plot(coord100$Var1, coord100$Var2, main="100 m plot area")
+# plot(coord250$Var1, coord250$Var2, main="250 m plot area")
+# plot(coord500$Var1, coord500$Var2, main="500 m plot area")
 
 
 length(coord$Var1)
-ext
 
 max(coord$Var1)-min(coord$Var1)
 max(coord$Var2)-min(coord$Var2)
@@ -95,6 +91,8 @@ max(coord$Var2)-min(coord$Var2)
 ######################################################################
 plot.metrics<-list()
 
+
+a<-40 #plot area
 for(i in c(1:length(coord$Var1))){    # the loop only goes for the first 4 rows because the first 4 use the C1laz. rows 5-8 need C2laz. 9-12 need C3laz.
   center<-coord[i, ]
 
@@ -170,6 +168,11 @@ plot.metrics[[i]]<-structural_diversity_metrics(laz_data)
 }  # END LOOP
 
 plot.metrics
+
+pm10
+pm40<-plot.metrics
+
+
 
 # post-loop processing
 plot.metrics<-as.data.frame(rbindlist(plot.metrics))

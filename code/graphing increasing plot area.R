@@ -50,13 +50,13 @@ head(spr)
 
 names(spr)
 
-sp<-spr[ ,c(2,3,4,5,12,10,15,17,9,13)]   
+sp<-spr[ ,c(2,3,4,5,11,12,10,15,17,9,13)]   
             
             
 
 head(sp,50)
 
-use<-gather(sp, "metric","value",5:10)
+use<-gather(sp, "metric","value",5:11)
 
 
 table(use$metric)
