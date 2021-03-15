@@ -43,6 +43,8 @@ wrefL<-list.files(path="neon_data\\DP1.30003.001\\2019\\FullSite\\D16\\2019_WREF
 # use 'readLAS' to read in the files
 laz<-readLAS(osbsL)
 
+plot(laz)
+
 ## get the center of the lidar files
 ext<-extent(laz)
 ext
@@ -52,7 +54,6 @@ center<-c( (ext[1]+ext[2])/2 , (ext[3]+ext[4])/2 )
 ## for troubleshooting the grid
 #center<-c(0,0)
 
-
 ## specify plot area plot areas for the kilometer of LiDAR data. 
 # for 500
 a<-500
@@ -60,6 +61,7 @@ lon<-seq(as.numeric((center[1]-400)), as.numeric((center[1]+400)) , sqrt((a^2)+(
 lat<-seq(as.numeric((center[2]-400)), as.numeric((center[2]+400)),  sqrt((a^2)+(a^2)))
 coord<-as.data.frame(expand.grid(lon, lat))
 coord$area<-paste(a,"m")
+
 
 plot(coord$Var1, coord$Var2)
 
