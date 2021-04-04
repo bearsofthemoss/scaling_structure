@@ -16,7 +16,7 @@ st.err <- function(x) {  sd(x, na.rm=T)}
 dim(obs)
 
 table(obs$type)
-use.AV<- aggregate( list(value=abs(obs$subtract)), by=list(site=obs$site, metric=obs$type, plot_area=obs$plot_area, sma=obs$site.met.area),FUN= "mean", na.rm=T)
+use.AV<- aggregate( list(value=obs$value), by=list(site=obs$site, metric=obs$type, plot_area=obs$plot_area, sma=obs$site.met.area),FUN= "mean", na.rm=T)
 use.se <- aggregate( list(value=abs(obs$value)), by=list(site=obs$site, metric=obs$type, plot_area=obs$plot_area,sma=obs$site.met.area),FUN= st.err)
 
 
@@ -29,8 +29,8 @@ use.AV$se<-use.se$value[match(use.AV$sma, use.se$sma)]
 head(use.AV)
 ggplot(use.AV, aes(x=plot_area, y=value, shape=site, col = site ))+
   geom_point(position=position_dodge(20),size=2) +geom_line(size=1)+
- # geom_errorbar(position=position_dodge(20),data=use.AV, mapping=aes(x=plot_area, ymin=value-se, ymax=value+se), width=0.2, size=1)+
-  facet_wrap(~metric)+  theme_bw()+ylab("Z score")+scale_color_manual(values=c("#000000", "#E69F00", "#56B4E9"))+
+  geom_errorbar(position=position_dodge(20),data=use.AV, mapping=aes(x=plot_area, ymin=value-se, ymax=value+se), width=0.2, size=1)+
+  facet_wrap(~metric, scales="free")+  theme_bw()+ylab("Native value")+scale_color_manual(values=c("#000000", "#E69F00", "#56B4E9"))+
   xlab("plot size (m)")
 
 
@@ -50,15 +50,12 @@ ggplot(obs, aes(x=plot_area, y=subtract, shape=site, col = site ))+
   geom_smooth(method="lm", se=F)
 
 
+# 
+# ggplot(obs, aes(x=plot_area, group=plot_area, y=subtract, shape=site, col = site ))+
+#   geom_violin(aes(group=plot_area,position=position_dodge(25)) +facet_wrap(site~type, scales="free_x")+
+#   theme_bw()+ylab("Z score")+scale_color_manual(values=c("#000000", "#E69F00", "#56B4E9"))
 
-ggplot(obs, aes(x=plot_area, group=plot_area, y=subtract, shape=site, col = site ))+
-  geom_violin(aes(group=plot_area,position=position_dodge(25)) +facet_wrap(site~type, scales="free_x")+
-  theme_bw()+ylab("Z score")+scale_color_manual(values=c("#000000", "#E69F00", "#56B4E9"))
 
-
-
-a<-table(obs$site, obs$plot_area)/6
-a/13
 
 
 library(ggplot2)
@@ -113,8 +110,8 @@ s.h$type<-"mean maximum canopy height"
 
 # subtract each obs from the mean, divide by standard deviation
 s.h$subtract<- (s.h$value- s.h$AVG)/s.h$SD
-g.height<-ggplot(s.h, aes(x=plot_area, y=subtract, col=site))+geom_point(position = position_dodge(width=10))+ylab("Coefficient of Variation")+
-  ggtitle("mean maximum canopy height")
+g.height<-ggplot(s.h, aes(x=plot_area, y=AVG, col=site))+geom_point(position = position_dodge(width=10))+ylab("")+
+  ggtitle("mean maximum canopy height")+scale_color_manual(values=c("#000000", "#E69F00", "#56B4E9"))
 g.height
 
 

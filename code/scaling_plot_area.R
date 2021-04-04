@@ -29,7 +29,7 @@ northing<-wref_tow[2]
 
 
 # download tile of aerial lidar that contains the tower
-byTileAOP("DP1.30003.001", site="OSBS", year="2019", check.size = T,buffer = 900,
+byTileAOP("DP1.30003.001", site="UNDE", year="2019", check.size = T,buffer = 900,
           easting=easting, northing=northing, savepath="neon_data")
 
 

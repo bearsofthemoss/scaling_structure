@@ -62,7 +62,8 @@ use<-gather(sp, "metric","value",5:11)
 table(use$metric)
 library(ggplot2)
 
+head(use)
 
-
+ggplot(use[use$metric=="mean.max.canopy.ht.aop", ], aes(x=plot_area, y= value))+geom_point()+facet_wrap(~site)
 
 write.csv(use, file="output_data/combined_scaling_data.csv")
