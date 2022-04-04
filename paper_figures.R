@@ -1,7 +1,30 @@
 # final graphs
 
+## some CHM
 
+wref_tow<-c(5074636.87, 581417.80)
+easting<-wref_tow[1]
+northing<-wref_tow[2]
 
+osbs_tow<-c(403886.42, 3284767.49)
+easting<-osbs_tow[1]
+northing<-osbs_tow[2]
+
+unde_tow<-c(5123162.89, 304366.95)
+easting<-unde_tow[1]
+northing<-unde_tow[2]
+
+# byTileAOP("DP3.30015.001", site="UNDE", year="2019", check.size = T,buffer = 900,
+#           easting=easting, northing=northing, savepath="neon_data")
+
+chm.osbs<-raster("neon_data\\DP3.30015.001\\2019\\FullSite\\D03\\2019_OSBS_5\\L3\\DiscreteLidar\\CanopyHeightModelGtif\\NEON_D03_OSBS_DP3_403000_3284000_CHM.tif")
+chm.unde<-raster("neon_data\\DP3.30015.001\\2019\\FullSite\\D05\\2019_UNDE_3\\L3\\DiscreteLidar\\CanopyHeightModelGtif\\NEON_D05_UNDE_DP3_304000_5123000_CHM.tif")
+chm.wref<-raster("C:\\Users\\Alex\\Documents\\GitHub\\scaling_structure\\neon_data\\DP3.30015.001\\2019\\FullSite\\D16\\2019_WREF_3\\L3\\DiscreteLidar\\CanopyHeightModelGtif\\NEON_D16_WREF_DP3_581000_5074000_CHM.tif")
+
+par(mfrow=c(1,3))
+plot(chm.wref, main="WREF")
+plot(chm.unde, main="UNDE")
+plot(chm.osbs, main="OSBS")
 
 ### below I calculate a .csv called "output_data_figure_2.csv".  You can make it again, or just use these values.
 obs<-read.csv('output_data/figure_2.csv')

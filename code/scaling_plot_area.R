@@ -29,7 +29,7 @@ northing<-wref_tow[2]
 
 
 # download tile of aerial lidar that contains the tower
-byTileAOP("DP1.30003.001", site="UNDE", year="2019", check.size = T,buffer = 900,
+byTileAOP("DP1.30003.001", site="OSBS", year="2019", check.size = T,buffer = 900,
           easting=easting, northing=northing, savepath="neon_data")
 
 
@@ -41,7 +41,10 @@ wrefL<-list.files(path="neon_data\\DP1.30003.001\\2019\\FullSite\\D16\\2019_WREF
 
 
 # use 'readLAS' to read in the files
-laz<-readLAS(osbsL)
+laz<-readLAS(wrefL)
+plot(laz)
+laz<-readLAS(undeL)
+laz<-readLAS(undeL)
 
 plot(laz)
 
@@ -56,10 +59,11 @@ center<-c( (ext[1]+ext[2])/2 , (ext[3]+ext[4])/2 )
 
 ## specify plot area plot areas for the kilometer of LiDAR data. 
 # for 500
-a<-500
-lon<-seq(as.numeric((center[1]-400)), as.numeric((center[1]+400)) , sqrt((a^2)+(a^2)))
-lat<-seq(as.numeric((center[2]-400)), as.numeric((center[2]+400)),  sqrt((a^2)+(a^2)))
+a<-250
+lon<-seq(as.numeric((center[1]-300)), as.numeric((center[1]+300)) , sqrt((a^2)+(a^2)))
+lat<-seq(as.numeric((center[2]-300)), as.numeric((center[2]+300)),  sqrt((a^2)+(a^2)))
 coord<-as.data.frame(expand.grid(lon, lat))
+coord
 coord$area<-paste(a,"m")
 
 
@@ -91,10 +95,10 @@ max(coord$Var2)-min(coord$Var2)
 # the Loop
     #  Credit to Liz LaRue and the NEON tutorial this came from!
 ######################################################################
+
+
 plot.metrics<-list()
-
-
-a<-40 #plot area
+a<-25 #plot area
 for(i in c(1:length(coord$Var1))){    # the loop only goes for the first 4 rows because the first 4 use the C1laz. rows 5-8 need C2laz. 9-12 need C3laz.
   center<-coord[i, ]
 
@@ -171,27 +175,63 @@ plot.metrics[[i]]<-structural_diversity_metrics(laz_data)
 
 plot.metrics
 
-pm10
-pm40<-plot.metrics
+pm25<-plot.metrics
+
+
+# so Far AY has made 200, 150, 100, 50 , 10, 175, 125,  75, 25 
+
 
 
 
 # post-loop processing
-plot.metrics<-as.data.frame(rbindlist(plot.metrics))
-plot.metrics$plot_area<-coord$area
+plot.10<-as.data.frame(rbindlist(pm10))
+plot.10$plot_area<-10
 
-pm<-plot.metrics
-head(pm)
-dim(pm)
+plot.25<-as.data.frame(rbindlist(pm25))
+plot.25$plot_area<-25
+
+plot.50<-as.data.frame(rbindlist(pm50))
+plot.50$plot_area<-50
+
+plot.75<-as.data.frame(rbindlist(pm75))
+plot.75$plot_area<-75
+
+plot.100<-as.data.frame(rbindlist(pm100))
+plot.100$plot_area<-100
+
+plot.125<-as.data.frame(rbindlist(pm125))
+plot.125$plot_area<-125
+
+plot.150<-as.data.frame(rbindlist(pm150))
+plot.150$plot_area<-150
+
+
+plot.175<-as.data.frame(rbindlist(pm175))
+plot.175$plot_area<-175
+
+plot.200<-as.data.frame(rbindlist(pm200))
+plot.200$plot_area<-200
+
+plo<-rbind(plot.10, plot.25, plot.50, plot.75, plot.100,
+plot.125, plot.150, plot.175, plot.200)
+
+head(plo)
+
+plo$plot<-rep(1:4,9)
+
+
 
 # graph to see the 13 metrics
-g<-gather(pm, "metric","value",3:15)
+g<-gather(plo, "metric","value",3:15)
 g
 
+write.csv(g, file="WREF_25m intervals.csv")
 
-write.csv(g, file="output_data/OSBS/10m_plot_area2.csv")
-
-  head(g)
-ggplot(g, aes(x=plot_area, y=value))+ geom_boxplot()+
+ggplot(g, aes(x=plot_area, y=value, group=plot))+ geom_point()+geom_line()+
 theme_classic()+facet_wrap(~metric, scales="free_y", nrow=2)+   theme(text=element_text(size=18))
+
+p<-aggregate(g$value, by=list(metric=g$metric, plot_area=g$plot_area),FUN="sd")
+
+ggplot(p, aes(x=plot_area, y=x))+ geom_point()+geom_line()+
+  theme_classic()+facet_wrap(~metric, scales="free_y", nrow=2)+   theme(text=element_text(size=18))
 
