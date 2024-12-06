@@ -10,7 +10,6 @@ library(data.table)
 library(ggplot2)
 library(tidyr)
 
-#additional change test
 ###run one site at a time (i.e., follow all code for specific "osbs" vs "unde" etc.)
 ########## Base it on the flux tower location?
 # OSBS tower coordinates
@@ -33,10 +32,11 @@ byTileAOP("DP1.30003.001", site="WREF", year="2019", check.size = T,buffer = 900
           easting=easting, northing=northing, savepath="neon_data")
 
 
+#updated file path 20241206
 # read in LAz files
 ### make a list of the files
-osbsL<-list.files(path="neon_data\\DP1.30003.001\\2019\\FullSite\\D03\\2019_OSBS_5\\L1\\DiscreteLidar\\ClassifiedPointCloud", recursive = T, full.names = T)
-undeL<-list.files(path="neon_data\\DP1.30003.001\\2019\\FullSite\\D05\\2019_UNDE_3\\L1\\DiscreteLidar\\ClassifiedPointCloud", recursive = T, full.names = T)
+osbsL<-list.files(path="neon_data\\DP1.30003.001\\neon-aop-products\\2019\\FullSite\\D16\\2019_OSBS_5\\L1\\DiscreteLidar\\ClassifiedPointCloud", recursive = T, full.names = T)
+undeL<-list.files(path="neon_data\\DP1.30003.001\\neon-aop-products\\2019\\FullSite\\D16\\2019_UNDE_3\\L1\\DiscreteLidar\\ClassifiedPointCloud", recursive = T, full.names = T)
 wrefL<-list.files(path="neon_data\\DP1.30003.001\\neon-aop-products\\2019\\FullSite\\D16\\2019_WREF_3\\L1\\DiscreteLidar\\ClassifiedPointCloud", recursive = T, full.names = T)
 
 
